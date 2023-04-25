@@ -6,15 +6,34 @@
 # in Git for Windows Portable
 # To be run from a git-bash session.
 
-SCRIPT=$(basename $0)
-cd $(dirname $0)
-cd ..
+ESC=
 
-GITURL="https://github.com/git-for-windows/git-sdk-64.git"
-RAWURL="https://github.com/git-for-windows/git-sdk-64/raw"
+RED=$ESC[91m
+GREEN=$ESC[92m
+YELLOW=$ESC[93m
+BLUE=$ESC[94m
+MAGENTA=$ESC[95m
+CYAN=$ESC[96m
+WHITE=$ESC[97m
+DEFAULT=$ESC[0m
 
-if test ! -d git-sdk-64; then
-    rm -rf git-sdk-64
+SCRIPT=$(basename $0 .sh)
+cd $TMP
+
+if [[ "$MSYSTEM" == "MINGW32" ]]; then
+  BT=32
+elif [[ "$MSYSTEM" == "MINGW64" ]]; then
+  BT=64
+else
+  echo "${RED}${SCRIPT}: Only MinGW32 or MinGW64 supported.${DEFAULT}"
+  exit 1
+fi
+
+GITURL="https://github.com/git-for-windows/git-sdk-$BT.git"
+RAWURL="https://github.com/git-for-windows/git-sdk-$BT/raw"
+
+if test ! -d git-sdk-$BT; then
+    rm -rf git-sdk-$BT
     # Clone tiny blobless shallow repo
     git clone \
         --depth 50 \
@@ -23,7 +42,7 @@ if test ! -d git-sdk-64; then
         $GITURL
 fi
 
-cd  git-sdk-64
+cd  git-sdk-$BT
 git pull
 
 ### Pre install minimal pacman bootstrap
